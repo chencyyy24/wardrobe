@@ -1,0 +1,133 @@
+### ============================================================
+### 个人衣柜 - 搭配管理接口测试
+### 服务器地址: http://localhost:8080
+### ============================================================
+
+### ============================================================
+### 前置条件：先创建衣物测试数据
+### ============================================================
+
+### 1. 创建衣物测试数据（如果尚未创建）
+POST http://localhost:8080/api/clothing/test-data
+
+### 2. 获取所有衣物列表（获取衣物 ID 用于搭配测试）
+GET http://localhost:8080/api/clothing
+
+### ============================================================
+### 搭配 CRUD
+### ============================================================
+
+### 3. 创建搭配（完整搭配：外套 + 上衣 + 裤子 + 鞋子）
+### 请将 outer/top/bottom/shoes 替换为实际衣物 ID
+POST http://localhost:8080/api/outfit
+Content-Type: application/json
+
+{
+  "name": "春日出游风",
+  "items": {
+    "outer": "outer-clothing-id",
+    "top": "top-clothing-id",
+    "bottom": "bottom-clothing-id",
+    "shoes": "shoes-clothing-id"
+  },
+  "card_image": ""
+}
+
+### 4. 创建搭配（最小搭配：仅上衣 + 裤子）
+POST http://localhost:8080/api/outfit
+Content-Type: application/json
+
+{
+  "name": "简约日常风",
+  "items": {
+    "top": "top-clothing-id",
+    "bottom": "bottom-clothing-id"
+  },
+  "card_image": ""
+}
+
+### 5. 创建搭配（含裙子 + 配饰）
+POST http://localhost:8080/api/outfit
+Content-Type: application/json
+
+{
+  "name": "优雅裙装风",
+  "items": {
+    "top": "top-clothing-id",
+    "skirt": "skirt-clothing-id",
+    "shoes": "shoes-clothing-id",
+    "accessory": "accessory-clothing-id"
+  },
+  "card_image": ""
+}
+
+### 6. 获取所有搭配
+GET http://localhost:8080/api/outfit
+
+### 7. 获取搭配摘要列表
+GET http://localhost:8080/api/outfit/summary
+
+### 8. 获取搭配详情（替换 :id 为实际搭配 ID）
+GET http://localhost:8080/api/outfit/outfit-id-here
+
+### 9. 复制搭配（替换 :id 为实际搭配 ID）
+POST http://localhost:8080/api/outfit/outfit-id-to-clone/clone
+Content-Type: application/json
+
+{
+  "name": "复制的春日出游风（微调版）"
+}
+
+### 10. 删除搭配（替换 :id 为实际搭配 ID）
+DELETE http://localhost:8080/api/outfit/outfit-id-to-delete
+
+### ============================================================
+### 测试数据
+### ============================================================
+
+### 11. 创建搭配测试数据（3 套默认搭配）
+POST http://localhost:8080/api/outfit/test-data
+
+### ============================================================
+### 错误场景测试
+### ============================================================
+
+### 12. 创建搭配 - 缺少必选项（没有上衣）
+POST http://localhost:8080/api/outfit
+Content-Type: application/json
+
+{
+  "name": "缺少上衣",
+  "items": {
+    "bottom": "some-bottom-id"
+  },
+  "card_image": ""
+}
+
+### 13. 创建搭配 - 裤子和裙子同时选择（互斥）
+POST http://localhost:8080/api/outfit
+Content-Type: application/json
+
+{
+  "name": "冲突测试",
+  "items": {
+    "top": "some-top-id",
+    "bottom": "some-bottom-id",
+    "skirt": "some-skirt-id"
+  },
+  "card_image": ""
+}
+
+### 14. 获取不存在的搭配详情
+GET http://localhost:8080/api/outfit/non-existent-id
+
+### 15. 删除不存在的搭配
+DELETE http://localhost:8080/api/outfit/non-existent-id
+
+### ============================================================
+### 注意:
+### - 运行测试前请先确保服务器已启动
+### - 先运行 #1 创建衣物测试数据，然后用 #2 获取衣物 ID
+### - 将获取到的 ID 填入 #3-#5 的 items 字段中
+### - 使用 VS Code REST Client 插件或 IntelliJ IDEA HTTP Client 运行
+### ============================================================

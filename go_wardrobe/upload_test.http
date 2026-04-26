@@ -1,0 +1,75 @@
+### ============================================================
+### 个人衣柜 - 上传与分类接口测试
+### 服务器地址: http://localhost:8080
+### ============================================================
+
+### ============================================================
+### 分类接口
+### ============================================================
+
+### 1. 获取所有分类（含小类）
+GET http://localhost:8080/api/categories
+
+### ============================================================
+### 上传接口
+### ============================================================
+
+### 2. 上传搭配卡片图片（请替换 image 路径为实际图片）
+POST http://localhost:8080/api/upload/card
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="outfit_card.png"
+Content-Type: image/png
+
+< ./test_assets/outfit_card.png
+--boundary--
+
+### 3. 通用图片上传（上传到 origin 目录）
+POST http://localhost:8080/api/upload/image
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="custom_image.jpg"
+Content-Type: image/jpeg
+
+< ./test_assets/custom_image.jpg
+--boundary
+Content-Disposition: form-data; name="type"
+
+origin
+--boundary--
+
+### 4. 通用图片上传（上传到 cards 目录）
+POST http://localhost:8080/api/upload/image
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="card_image.png"
+Content-Type: image/png
+
+< ./test_assets/card_image.png
+--boundary
+Content-Disposition: form-data; name="type"
+
+cards
+--boundary--
+
+### ============================================================
+### 静态文件访问（请替换为实际文件名）
+### ============================================================
+
+### 5. 查看上传的原图
+GET http://localhost:8080/uploads/origin/test_1.jpg
+
+### 6. 查看白底抠图
+GET http://localhost:8080/uploads/masked/test_1.png
+
+### 7. 查看搭配卡片
+GET http://localhost:8080/uploads/cards/card_sample.png
+
+### ============================================================
+### 注意:
+### - 上传接口需要准备测试图片，放在 go_wardrobe/test_assets/ 目录下
+### - 使用 VS Code REST Client 插件或 IntelliJ IDEA HTTP Client 运行
+### ============================================================

@@ -1,0 +1,20 @@
+# IDE
+.idea/
+.vscode/
+.claude/
+
+# Go
+go_wardrobe/tmp/
+*.exe
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+__resp*.txt
+*.docx

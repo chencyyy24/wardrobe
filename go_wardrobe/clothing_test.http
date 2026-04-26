@@ -1,0 +1,79 @@
+### ============================================================
+### 个人衣柜 - 衣物管理接口测试
+### 服务器地址: http://localhost:8080
+### ============================================================
+
+### 1. 健康检查
+GET http://localhost:8080/api/health
+
+### 2. 获取所有分类
+GET http://localhost:8080/api/categories
+
+### ============================================================
+### 衣物上传与查询
+### ============================================================
+
+### 3. 上传衣物（请替换 image 路径为实际图片）
+POST http://localhost:8080/api/clothing
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="test_shirt.jpg"
+Content-Type: image/jpeg
+
+< ./test_assets/test_shirt.jpg
+--boundary
+Content-Disposition: form-data; name="name"
+
+蓝色条纹衬衫
+--boundary
+Content-Disposition: form-data; name="category_id"
+
+2
+--boundary
+Content-Disposition: form-data; name="subcategory_id"
+
+6
+--boundary--
+
+### 4. 获取衣物列表（全部）
+GET http://localhost:8080/api/clothing
+
+### 5. 按大类筛选（上衣）
+GET http://localhost:8080/api/clothing?category_id=2
+
+### 6. 按大类筛选（外套）
+GET http://localhost:8080/api/clothing?category_id=1
+
+### 7. 按大类筛选（裤子）
+GET http://localhost:8080/api/clothing?category_id=3
+
+### 8. 按大类筛选（鞋子）
+GET http://localhost:8080/api/clothing?category_id=5
+
+### 9. 获取单个衣物详情（替换 :id 为实际 ID）
+GET http://localhost:8080/api/clothing/clothing-id-here
+
+### 10. 批量查询衣物状态（替换 id1,id2 为实际 ID）
+GET http://localhost:8080/api/clothing/status?ids=id1,id2,id3
+
+### 11. 重新触发抠图（替换 :id 为实际 ID）
+POST http://localhost:8080/api/clothing/failed-clothing-id/retry
+
+### 12. 删除衣物（替换 :id 为实际 ID）
+DELETE http://localhost:8080/api/clothing/clothing-id-to-delete
+
+### ============================================================
+### 测试数据
+### ============================================================
+
+### 13. 创建衣物测试数据（10 条覆盖所有大类）
+POST http://localhost:8080/api/clothing/test-data
+
+### ============================================================
+### 注意:
+### - 运行测试前请先启动服务器: go run main.go
+### - 测试上传需要准备测试图片，放在 go_wardrobe/test_assets/ 目录下
+### - 替换 {id} 为实际的衣物 UUID
+### - 使用 VS Code REST Client 插件或 IntelliJ IDEA HTTP Client 运行
+### ============================================================
