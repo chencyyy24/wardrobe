@@ -17,7 +17,8 @@ const activeTab = computed(() => {
 })
 
 function onTabChange(index: number) {
-  router.push(tabRoutes[index])
+  const route = tabRoutes[index]
+  if (route) router.push(route)
 }
 </script>
 

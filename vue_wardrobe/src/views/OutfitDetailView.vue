@@ -188,6 +188,7 @@ async function deleteOutfit() {
     message: `确定要删除「${outfit.value.name}」吗？`,
     confirmButtonColor: '#ee0a24',
   }).then(async () => {
+    if (!outfit.value) return
     try {
       await outfitStore.deleteOutfit(outfit.value.id)
       showToast('删除成功')
