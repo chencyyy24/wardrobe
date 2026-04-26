@@ -18,6 +18,9 @@ const name = ref('')
 const selectedCategory = ref<Category | null>(null)
 const selectedSubcategory = ref<Subcategory | null>(null)
 
+// File input ref for iOS compatibility
+const fileInput = ref<HTMLInputElement | null>(null)
+
 // Action sheet
 const showCategorySheet = ref(false)
 const showSubcategorySheet = ref(false)
@@ -53,6 +56,12 @@ function handleFileChange(event: Event) {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
   if (file) onFileSelect(file)
+  // iOS Safari 需要重置 value，否则同一文件无法触发二次 change
+  target.value = ''
+}
+
+function pickImage() {
+  fileInput.value?.click()
 }
 
 function selectCategory(cat: Category) {
@@ -107,18 +116,19 @@ async function onSubmit() {
     <!-- 图片选择 -->
     <div class="section">
       <div class="section-title">衣物照片</div>
-      <label class="upload-area" for="clothing-image-input">
+      <div class="upload-area" @click="pickImage">
         <img v-if="imagePreview" :src="imagePreview" class="preview-img" />
         <div v-else class="upload-placeholder">
           <van-icon name="photograph" size="48" color="#c8c9cc" />
           <p>点击选择图片</p>
         </div>
-      </label>
+      </div>
       <input
-        id="clothing-image-input"
+        ref="fileInput"
         type="file"
         accept="image/*"
-        hidden
+        capture="environment"
+        class="file-input-hidden"
         @change="handleFileChange"
       />
     </div>
@@ -260,5 +270,12 @@ async function onSubmit() {
 .submit-area {
   margin-top: 32px;
   padding-bottom: 20px;
+}
+.file-input-hidden {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 </style>
