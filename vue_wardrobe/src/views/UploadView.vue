@@ -18,9 +18,6 @@ const name = ref('')
 const selectedCategory = ref<Category | null>(null)
 const selectedSubcategory = ref<Subcategory | null>(null)
 
-// File input ref for iOS compatibility
-const fileInput = ref<HTMLInputElement | null>(null)
-
 // Action sheet
 const showCategorySheet = ref(false)
 const showSubcategorySheet = ref(false)
@@ -52,16 +49,14 @@ function onFileSelect(file: File) {
   }
 }
 
-function handleFileChange(event: Event) {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) onFileSelect(file)
-  // iOS Safari 需要重置 value，否则同一文件无法触发二次 change
-  target.value = ''
-}
-
-function pickImage() {
-  fileInput.value?.click()
+function onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) {
+    onFileSelect(file)
+  }
+  // 允许重复选择同一文件
+  input.value = ''
 }
 
 function selectCategory(cat: Category) {
@@ -116,21 +111,20 @@ async function onSubmit() {
     <!-- 图片选择 -->
     <div class="section">
       <div class="section-title">衣物照片</div>
-      <div class="upload-area" @click="pickImage">
+      <div class="upload-area">
         <img v-if="imagePreview" :src="imagePreview" class="preview-img" />
         <div v-else class="upload-placeholder">
           <van-icon name="photograph" size="48" color="#c8c9cc" />
           <p>点击选择图片</p>
         </div>
+        <!-- file input 覆盖在区域上方，直接接收点击 -->
+        <input
+          type="file"
+          accept="image/*"
+          class="file-input-overlay"
+          @change="onFileChange"
+        />
       </div>
-      <input
-        ref="fileInput"
-        type="file"
-        accept="image/*"
-        capture="environment"
-        class="file-input-hidden"
-        @change="handleFileChange"
-      />
     </div>
 
     <!-- 名称 -->
@@ -224,16 +218,27 @@ async function onSubmit() {
   margin-bottom: 8px;
 }
 .upload-area {
+  position: relative;
   background: #fff;
   border: 2px dashed #ddd;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  cursor: pointer;
   min-height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+.file-input-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
 }
 .upload-placeholder p {
   color: #bbb;
@@ -270,12 +275,5 @@ async function onSubmit() {
 .submit-area {
   margin-top: 32px;
   padding-bottom: 20px;
-}
-.file-input-hidden {
-  position: absolute;
-  left: -9999px;
-  opacity: 0;
-  width: 0;
-  height: 0;
 }
 </style>
